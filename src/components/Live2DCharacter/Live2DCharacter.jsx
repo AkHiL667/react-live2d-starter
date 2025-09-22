@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { loadLive2DModel } from './utils/live2dLoader.jsx';
+import { Live2dController } from './utils/Live2dController.jsx';
 import './Live2DCharacter.module.css';
 
 const Live2DCharacter = ({ modelPath }) => {
@@ -7,6 +8,7 @@ const Live2DCharacter = ({ modelPath }) => {
     const [isLoading, setIsLoading] = useState(true);
     const animationFrameId = useRef();
     const loadedModelRef = useRef(null);
+    const controllerRef = useRef(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -45,6 +47,10 @@ const Live2DCharacter = ({ modelPath }) => {
             try {
                 const model = await loadLive2DModel(gl, modelPath);
                 loadedModelRef.current = model;
+
+                controllerRef.current = new Live2dController(canvas, loadedModelRef);
+                controllerRef.current.attach();
+
                 setIsLoading(false);
                 animationFrameId.current = window.requestAnimationFrame(renderLoop);
             } catch (e) {
@@ -55,6 +61,9 @@ const Live2DCharacter = ({ modelPath }) => {
         // Cleanup function
         return () => {
             window.removeEventListener('resize', resize);
+            if (controllerRef.current) {
+                controllerRef.current.detach();
+            }
             if (animationFrameId.current) {
                 window.cancelAnimationFrame(animationFrameId.current);
             }
