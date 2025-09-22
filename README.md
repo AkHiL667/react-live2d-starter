@@ -1,5 +1,7 @@
 # React Live2D Cubism Starter
 
+Demo-https://live2d-model-react.netlify.app/
+
 **React + Vite starter with Live2D Cubism SDK integration.**  
 Bring Live2D `.model3.json` characters into your React apps with a ready-to-use `<Live2DCharacter />` component.
 
